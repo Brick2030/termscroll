@@ -1,0 +1,2 @@
+GoalManagerFileName = "GMstorage"
+SaveDirectory = "./storage/"
