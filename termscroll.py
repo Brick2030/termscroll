@@ -86,12 +86,12 @@ while(True):
             inp = input("Enter a name: ")
             goal = Goal(inp, "ongoing")
             add(goal)
-            ShowStatus(f"{goal} was added...")
+            ShowStatus(f"{goal.name} was added...")
 
         case "remove":
             inp = input("Index to remove: ")
-            remove(inp)
             ShowStatus(f"{goal_array[int(inp)].name} was removed...")
+            remove(inp)
         
         case "help":
             ShowStatus("help, load, save, add, remove, exit, invert, randm, defm")
