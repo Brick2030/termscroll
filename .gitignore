@@ -1,3 +1,7 @@
 *.task
 GMstorage
+GMstorage.db
+GMstorage.db-journal
+export.txt
+sqltest.py
 __pycache__
