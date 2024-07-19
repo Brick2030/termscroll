@@ -64,20 +64,34 @@ def ShowDB_Default():
         for i in items:
             print(f"[{i[0]}]: {i[1]}")
     
-
+def findgaps():
+    gaps = []
+    crs.execute("SELECT rowid, * FROM goals")
+    items = crs.fetchall()
+    for i in range(len(items)-1):
+        if i+1 != int(items[i][0]): 
+            gaps.append([items[i-1][0], items[i][0]])
+            break
+    if len(gaps) > 0: return(gaps[0])
+    else: return 0
+        
+            
 
 def ShowStatus(msg):
     global status_msg
-    status_msg = "Status: " + msg
+    status_msg = "Status: " + str(msg)
 
 def Add(GoalText):
     createDate = DateToday
     watchedDate = ''
     crs.execute(f"INSERT INTO goals VALUES ('{GoalText}', '{createDate}','{watchedDate}')")
+    
 
 # def watch - will be called to changed watched date. 
 def Save():
     DataBase.commit()
+        #crs.execute("SELECT rowid, * FROM goals")
+    crs.execute("VACUUM")
 
 def Load():
     with sqlite3.connect(FileName) as DataBase:
@@ -86,11 +100,12 @@ def Load():
 def Remove(inp): # It's called by status show and returns status... sorry...
     crs.execute(f"SELECT rowid, * FROM goals WHERE rowid = {inp}")
     removed = crs.fetchall()
-    inp2 = input(f"You really want to remove {removed[0][1]}?\ny/n: ")
+    inp2 = input(f"You really want to remove {removed[0][1]}?\n\ny/n: ")
     if(inp2 == "y"): 
         crs.execute(f"DELETE FROM goals WHERE rowid = {inp}")
-        return (f"{removed[0][1]} was removed.")
-    else: return "canceled"
+        return (f"{removed[0][1]} was removed, but ID's are broken now. Save changes to fix.")
+
+    else: return "Canceled"
 
 def Edit(inp):
     crs.execute(f"SELECT rowid, * FROM goals WHERE rowid = {inp}")
@@ -147,4 +162,7 @@ while(True):
             _find_results_output = True
             _random_output = False
             _search_word = input("Word to find: ")
+
+        case "gaps":
+            findgaps()
              
