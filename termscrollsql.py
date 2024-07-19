@@ -2,11 +2,14 @@ import sqlite3
 import settings
 import os
 import time
+import random
 
 DateToday = time.strftime(settings.DateLayout)
 FileName = settings.SaveDirectory + settings.FileName
 status_msg = "Welcome to termscroll! Type \"h\" to see all commands!"
 
+random_output_max : int = 5
+_random_output : bool = False # Bool var for randomized output. 
 
 # Making a database:
 with sqlite3.connect(FileName) as DataBase:
@@ -22,10 +25,24 @@ crs.execute("""CREATE TABLE IF NOT EXISTS goals(
 
 # Functions: -------------------------------------------------------------------------
 def ShowDB_Default():
-    crs.execute("SELECT rowid, * FROM goals")
-    items = crs.fetchall()
-    for i in items:
-        print(f"[{i[0]}]: {i[1]}")
+    if(_random_output):
+        crs.execute("SELECT rowid, * FROM goals")
+        all_tasks = crs.fetchall()
+        rand_queue = []
+        for i in range(random_output_max):
+            rand_temp : int = random.randint(0, len(all_tasks)-1)
+            if (rand_queue.count(rand_temp) == 0): rand_queue.append(rand_temp)
+        for i in rand_queue:
+            print(f"[{i+1}]: {all_tasks[i][1]}")
+
+
+
+
+    else:
+        crs.execute("SELECT rowid, * FROM goals")
+        items = crs.fetchall()
+        for i in items:
+            print(f"[{i[0]}]: {i[1]}")
 
 def ShowStatus(msg):
     global status_msg
@@ -91,4 +108,8 @@ while(True):
             ShowStatus(f"[{inp}]: > {Edit(inp)} < was changed.")
 
         case "h":
-            ShowStatus("a(dd), s(ave), l(oad), r(emove), (e)dit, (h)elp")
+            ShowStatus("a(dd), s(ave), l(oad), r(emove), (e)dit, (h)elp, (rand)om output, (def)ault output",)
+
+        case "rand":
+            ShowStatus("Random mode activated")
+            _random_output = True
