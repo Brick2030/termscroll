@@ -63,7 +63,6 @@ def ShowDB_Default():
         items = crs.fetchall()
         for i in items:
             print(f"[{i[0]}]: {i[1]}")
-        print(len(items)) ##############
     
 
 
